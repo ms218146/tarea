@@ -21,8 +21,8 @@ resource "aws_internet_gateway" "aws-igw" {
 
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.catdog-vpc.id
-  count             = length(var.private_subnets)
-  cidr_block        = element(var.private_subnets, count.index)
+  count             = length(var.subnet_privada)
+  cidr_block        = element(var.subnet_privada, count.index)
   availability_zone = element(var.availability_zones, count.index)
 
   tags = {
@@ -32,9 +32,9 @@ resource "aws_subnet" "private" {
 
 resource "aws_subnet" "publica" {
   vpc_id                  = aws_vpc.catdog-vpc.id
-  cidr_block              = element(var.public_subnets, count.index)
+  cidr_block              = element(var.subnet_publica, count.index)
   availability_zone       = element(var.availability_zones, count.index)
-  count                   = length(var.public_subnets)
+  count                   = length(var.subnet_publica)
   map_public_ip_on_launch = true
 
   tags = {
@@ -57,7 +57,7 @@ resource "aws_route" "publica" {
 }
 
 resource "aws_route_table_association" "publica" {
-  count          = length(var.public_subnets)
+  count          = length(var.subnet_publica)
   subnet_id      = element(aws_subnet.publica.*.id, count.index)
   route_table_id = aws_route_table.publica.id
 }
